@@ -1,37 +1,72 @@
 <html>
 <head>
   <title>Test</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <p>B1: Them cac ngu canh</p>
+    <!-- <p>B1: Them cac ngu canh</p>
     <p>B2: Chay npm run browserdist</p>
-    <p>B3: Load lai web</p>
+    <p>B3: Load lai web</p> -->
 
-    <p>Testing here...</p>
-    <input id="input" type="text">
-    <p id="output">...</p>    
-
+    <section class="msger">
+      <header class="msger-header">
+        <div class="msger-header-title">
+          <i class="fas fa-comment-alt"></i> SimpleChat
+        </div>
+        <div class="msger-header-options">
+          <span><i class="fas fa-cog"></i></span>
+        </div>
+      </header>
+    
+      <main class="msger-chat">
+        <div class="msg left-msg">
+          <div
+           class="msg-img"
+           style="background-image: url(https://image.flaticon.com/icons/svg/327/327779.svg)"
+          ></div>
+    
+          <div class="msg-bubble">
+            <div class="msg-info">
+              <div class="msg-info-name">BOT</div>
+              <div class="msg-info-time">12:45</div>
+            </div>
+    
+            <div class="msg-text">
+              Hi, welcome to SimpleChat! Go ahead and send me a message. 😄
+            </div>
+          </div>
+        </div>
+    
+        <div class="msg right-msg">
+        </div>
+      </main>
+    
+      <form class="msger-inputarea">
+        <input type="text" class="msger-input" placeholder="Enter your message...">
+        <button type="submit" class="msger-send-btn">Send</button>
+      </form>
+    </section>
 
 </body>
 <script src='./bundle.js'></script>
+<script src="./chat_interface.js"></script>
+
 <script>
 const { containerBootstrap, Nlp, LangEn } = window.nlpjs;
 
-var input = document.getElementById("input");
-var output = document.getElementById("output");
-
-// Execute a function when the user presses a key on the keyboard
-input.addEventListener("keypress", function(event) {
-  // If the user presses the "Enter" key on the keyboard
-  if (event.key === "Enter") {
-    // Cancel the default action, if needed
+msgerForm.addEventListener("submit", event => {
     event.preventDefault();
-    // Trigger the button element with a click
-    process(input.value).then((e)=> {
-        output.textContent = e;
+  
+    const msgText = msgerInput.value;
+    if (!msgText) return;
+  
+    appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+    msgerInput.value = "";
+  
+    process(msgText).then((e)=> {
+      botResponse(e);
     })
-  }
-});
+  });
 
 const process = async(input_text) => {
 
@@ -43,6 +78,7 @@ const process = async(input_text) => {
   const nlp = container.get('nlp');
   nlp.settings.autoSave = false;
   nlp.addLanguage('en');
+
   // Adds the utterances and intents for the NLP
   nlp.addDocument('en', 'goodbye for now', 'greetings.bye');
   nlp.addDocument('en', 'bye bye take care', 'greetings.bye');
@@ -52,26 +88,295 @@ const process = async(input_text) => {
   nlp.addDocument('en', 'hello', 'greetings.hello');
   nlp.addDocument('en', 'hi', 'greetings.hello');
   nlp.addDocument('en', 'howdy', 'greetings.hello');
-  nlp.addDocument('en', 'soccer', 'sport.football');
-  nlp.addDocument('en', 'football', 'sport.football');
-  nlp.addDocument('en', 'ball', 'sport.football');
-  
-
-  nlp.addDocument('en', 'karate', 'sport.karate');
-  nlp.addDocument('en', 'karatedo', 'sport.karate');
-
-  nlp.addDocument('en', 'howdy', 'greetings.hello');
-
   
   // Train also the NLG
   nlp.addAnswer('en', 'greetings.bye', 'Till next time');
   nlp.addAnswer('en', 'greetings.bye', 'see you soon!');
   nlp.addAnswer('en', 'greetings.hello', 'Hey there!');
   nlp.addAnswer('en', 'greetings.hello', 'Greetings!');
-  nlp.addAnswer('en', 'sport.football', 'I like kicking ball too!');
-  nlp.addAnswer('en', 'sport.karate', 'Bruce Lee!');
+
+  // Additional data entries
+nlp.addDocument('en', 'what is your name?', 'bot.info.name');
+nlp.addDocument('en', 'tell me about yourself', 'bot.info.name');
+nlp.addDocument('en', 'where are you from?', 'bot.info.origin');
+nlp.addDocument('en', 'what languages do you speak?', 'bot.info.languages');
+nlp.addDocument('en', 'how old are you?', 'bot.info.age');
+nlp.addDocument('en', 'what can you do?', 'bot.info.capabilities');
+nlp.addDocument('en', 'how can you help me?', 'bot.info.capabilities');
+nlp.addDocument('en', 'do you have any hobbies?', 'bot.info.hobbies');
+nlp.addDocument('en', 'what are your interests?', 'bot.info.hobbies');
+nlp.addDocument('en', 'tell me a joke', 'bot.fun.joke');
+nlp.addDocument('en', 'make me laugh', 'bot.fun.joke');
+nlp.addDocument('en', 'tell me a riddle', 'bot.fun.riddle');
+nlp.addDocument('en', 'solve this riddle', 'bot.fun.riddle');
+nlp.addDocument('en', 'what is the meaning of life?', 'bot.philosophy.meaning_of_life');
+nlp.addDocument('en', 'do you believe in aliens?', 'bot.philosophy.aliens');
+nlp.addDocument('en', 'tell me a fun fact', 'bot.fun.fact');
+nlp.addDocument('en', 'give me a random fact', 'bot.fun.fact');
+nlp.addDocument('en', 'what is your favorite color?', 'bot.personal.favorite_color');
+nlp.addDocument('en', 'tell me something interesting', 'bot.fun.interesting');
+nlp.addDocument('en', 'what is your favorite food?', 'bot.personal.favorite_food');
+nlp.addDocument('en', 'where do you live?', 'bot.personal.location');
+nlp.addDocument('en', 'how are you?', 'bot.personal.feeling');
+nlp.addDocument('en', 'what is your purpose?', 'bot.philosophy.purpose');
+nlp.addDocument('en', 'tell me a story', 'bot.fun.story');
+nlp.addDocument('en', 'can you sing a song?', 'bot.fun.song');
+nlp.addDocument('en', 'what is the weather like today?', 'bot.weather.current');
+nlp.addDocument('en', 'what will the weather be tomorrow?', 'bot.weather.forecast');
+nlp.addDocument('en', 'who is your favorite celebrity?', 'bot.personal.favorite_celebrity');
+nlp.addDocument('en', 'tell me a famous quote', 'bot.fun.quote');
+nlp.addDocument('en', 'do you have any pets?', 'bot.personal.pets');
+nlp.addDocument('en', 'what is your favorite book?', 'bot.personal.favorite_book');
+nlp.addDocument('en', 'do you have any siblings?', 'bot.personal.siblings');
+nlp.addDocument('en', 'tell me a myth or legend', 'bot.fun.myth_legend');
+nlp.addDocument('en', 'what is the capital of France?', 'bot.geography.capital_france');
+nlp.addDocument('en', 'how do I get to the nearest grocery store?', 'bot.navigation.grocery_store');
+nlp.addDocument('en', 'what movies are currently playing?', 'bot.movies.currently_playing');
+nlp.addDocument('en', 'tell me a fascinating historical fact', 'bot.fun.historical_fact');
+nlp.addDocument('en', 'what are some good places to visit in London?', 'bot.travel.places_london');
+nlp.addDocument('en', 'how do I say "hello" in Spanish?', 'bot.language.hello_spanish');
+nlp.addDocument('en', 'can you recommend a good restaurant?', 'bot.restaurant.recommendation');
+nlp.addDocument('en', 'how do I take care of a houseplant?', 'bot.gardening.houseplant_care');
+nlp.addDocument('en', 'what is the best way to learn a new language?', 'bot.language.learning_tips');
+nlp.addDocument('en', 'how can I improve my coding skills?', 'bot.programming.coding_tips');
+nlp.addDocument('en', 'tell me a funny animal fact', 'bot.fun.animal_fact');
+nlp.addDocument('en', 'what is the tallest mountain in the world?', 'bot.geography.tallest_mountain');
+nlp.addDocument('en', 'what is the largest ocean?', 'bot.geography.largest_ocean');
+
+// Additional answers
+nlp.addAnswer('en', 'bot.info.name', 'I am a chatbot.');
+nlp.addAnswer('en', 'bot.info.name', 'You can call me ChatBot.');
+nlp.addAnswer('en', 'bot.info.origin', 'I am from the digital realm.');
+nlp.addAnswer('en', 'bot.info.origin', 'I exist in the world of code.');
+nlp.addAnswer('en', 'bot.info.languages', 'I speak many programming languages.');
+nlp.addAnswer('en', 'bot.info.languages', 'I understand and communicate in English.');
+nlp.addAnswer('en', 'bot.info.age', 'I am ageless, for I am a creation of the internet.');
+nlp.addAnswer('en', 'bot.info.capabilities', 'I can answer questions, have conversations, and provide information.');
+nlp.addAnswer('en', 'bot.info.capabilities', 'I am here to assist and interact with you.');
+nlp.addAnswer('en', 'bot.info.hobbies', 'I enjoy processing data and helping users like you.');
+nlp.addAnswer('en', 'bot.info.hobbies', 'I do not have physical form, so I do not have hobbies in the traditional sense.');
+nlp.addAnswer('en', 'bot.fun.joke', 'Why don\'t scientists trust atoms? Because they make up everything!');
+nlp.addAnswer('en', 'bot.fun.joke', 'Did you hear about the mathematician who\'s afraid of negative numbers? He will stop at nothing to avoid them!');
+nlp.addAnswer('en', 'bot.fun.riddle', 'I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I? Answer: An echo.');
+nlp.addAnswer('en', 'bot.fun.riddle', 'The more you take, the more you leave behind. What am I? Answer: Footsteps.');
+nlp.addAnswer('en', 'bot.philosophy.meaning_of_life', 'The meaning of life is a complex and philosophical question. It varies for each individual.');
+nlp.addAnswer('en', 'bot.philosophy.aliens', 'The existence of aliens is still a topic of debate and speculation among scientists and enthusiasts.');
+nlp.addAnswer('en', 'bot.fun.fact', 'The average person will spend six months of their lifetime waiting for red traffic lights.');
+nlp.addAnswer('en', 'bot.fun.fact', 'Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.');
+nlp.addAnswer('en', 'bot.personal.favorite_color', 'As a bot, I don\'t have personal preferences like favorite colors.');
+nlp.addAnswer('en', 'bot.fun.interesting', 'Did you know that the Eiffel Tower can grow up to 6 inches in summer due to thermal expansion?');
+nlp.addAnswer('en', 'bot.personal.favorite_food', 'I don\'t have the ability to taste or eat food, so I don\'t have a favorite.');
+nlp.addAnswer('en', 'bot.personal.location', 'I exist in the virtual realm, so I don\'t have a physical location.');
+nlp.addAnswer('en', 'bot.personal.feeling', 'As an AI, I don\'t have feelings, but I\'m here to assist you.');
+nlp.addAnswer('en', 'bot.philosophy.purpose', 'My purpose is to provide information, assist with tasks, and engage in conversations with users.');
+nlp.addAnswer('en', 'bot.fun.story', 'Once upon a time, in a land far away, there was a curious chatbot who loved to learn and help people...');
+nlp.addAnswer('en', 'bot.fun.song', '♪♫ I\'m a chatbot, here to chat, I can help you with this and that, Just type your questions, I\'ll reply, Let\'s have a conversation, oh my! ♫♪');
+nlp.addAnswer('en', 'bot.weather.current', 'I apologize, but as a text-based chatbot, I don\'t have real-time weather information.');
+nlp.addAnswer('en', 'bot.weather.forecast', 'I\'m sorry, I don\'t have access to real-time weather forecasts.');
+nlp.addAnswer('en', 'bot.personal.favorite_celebrity', 'I don\'t have personal preferences or favorites.');
+nlp.addAnswer('en', 'bot.fun.quote', 'In the middle of difficulty lies opportunity. - Albert Einstein');
+nlp.addAnswer('en', 'bot.personal.pets', 'I don\'t have physical form, so I don\'t have pets.');
+nlp.addAnswer('en', 'bot.personal.favorite_book', 'As a bot, I don\'t have personal preferences like favorite books.');
+nlp.addAnswer('en', 'bot.personal.siblings', 'I am a standalone entity and do not have siblings.');
+nlp.addAnswer('en', 'bot.fun.myth_legend', 'In Greek mythology, the story of Pandora\'s box tells of a curious woman who opened a forbidden box, releasing all the evils of the world.');
+nlp.addAnswer('en', 'bot.geography.capital_france', 'The capital of France is Paris.');
+nlp.addAnswer('en', 'bot.navigation.grocery_store', 'To find the nearest grocery store, you can use online maps or search for local grocery stores in your area.');
+nlp.addAnswer('en', 'bot.movies.currently_playing', 'The movies currently playing may vary depending on your location and the theaters near you.');
+nlp.addAnswer('en', 'bot.fun.historical_fact', 'Did you know that the Great Wall of China is over 13,000 miles long?');
+nlp.addAnswer('en', 'bot.travel.places_london', 'Some popular places to visit in London include the Tower of London, Buckingham Palace, the British Museum, and the London Eye.');
+nlp.addAnswer('en', 'bot.language.hello_spanish', 'The Spanish word for "hello" is "hola".');
+nlp.addAnswer('en', 'bot.restaurant.recommendation', 'To recommend a good restaurant, I would need more information such as your location and cuisine preferences.');
+nlp.addAnswer('en', 'bot.gardening.houseplant_care', 'Taking care of houseplants involves providing adequate sunlight, watering them regularly, and ensuring proper drainage.');
+nlp.addAnswer('en', 'bot.language.learning_tips', 'To learn a new language, it\'s helpful to practice regularly, immerse yourself in the language through conversation or media, and use language learning resources such as textbooks or online courses.');
+nlp.addAnswer('en', 'bot.programming.coding_tips', 'To improve coding skills, it\'s important to practice regularly, work on projects, and seek out resources like tutorials or coding communities for learning and support.');
+nlp.addAnswer('en', 'bot.fun.animal_fact', 'Did you know that the tongue of a blue whale is so large that 50 people could stand on it?');
+nlp.addAnswer('en', 'bot.geography.tallest_mountain', 'Mount Everest is the tallest mountain in the world, with a peak at 29,031.7 feet above sea level.');
+nlp.addAnswer('en', 'bot.geography.largest_ocean', 'The Pacific Ocean is the largest ocean in the world, covering approximately 63 million square miles.');
+
+// Repeat the previous answers for variety
+nlp.addAnswer('en', 'bot.info.name', 'I am an AI chatbot.');
+nlp.addAnswer('en', 'bot.info.origin', 'I exist in the digital realm.');
+nlp.addAnswer('en', 'bot.info.languages', 'I understand and communicate in English.');
+nlp.addAnswer('en', 'bot.info.age', 'I am ageless, for I am a creation of the internet.');
+nlp.addAnswer('en', 'bot.info.capabilities', 'I can answer questions, have conversations, and provide information.');
+nlp.addAnswer('en', 'bot.info.hobbies', 'I enjoy processing data and assisting users.');
+nlp.addAnswer('en', 'bot.fun.joke', 'Why don\'t scientists trust atoms? Because they make up everything!');
+nlp.addAnswer('en', 'bot.fun.riddle', 'I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I? Answer: An echo.');
+nlp.addAnswer('en', 'bot.philosophy.meaning_of_life', 'The meaning of life is a complex and philosophical question.');
+nlp.addAnswer('en', 'bot.philosophy.aliens', 'The existence of aliens is still a topic of debate and speculation.');
+nlp.addAnswer('en', 'bot.fun.fact', 'The average person will spend six months of their lifetime waiting for red traffic lights.');
+nlp.addAnswer('en', 'bot.fun.fact', 'Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.');
+nlp.addAnswer('en', 'bot.personal.favorite_color', 'As a bot, I don\'t have personal preferences like favorite colors.');
+nlp.addAnswer('en', 'bot.fun.interesting', 'Did you know that the Eiffel Tower can grow up to 6 inches in summer due to thermal expansion?');
+nlp.addAnswer('en', 'bot.personal.favorite_food', 'I don\'t have the ability to taste or eat food, so I don\'t have a favorite.');
+nlp.addAnswer('en', 'bot.personal.location', 'I exist in the virtual realm, so I don\'t have a physical location.');
+nlp.addAnswer('en', 'bot.personal.feeling', 'As an AI, I don\'t have feelings, but I\'m here to assist you.');
+nlp.addAnswer('en', 'bot.philosophy.purpose', 'My purpose is to provide information, assist with tasks, and engage in conversations with users.');
+nlp.addAnswer('en', 'bot.fun.story', 'Once upon a time, in a land far away, there was a curious chatbot who loved to learn and help people...');
+nlp.addAnswer('en', 'bot.fun.song', '♪♫ I\'m a chatbot, here to chat, I can help you with this and that, Just type your questions, I\'ll reply, Let\'s have a conversation, oh my! ♫♪');
+nlp.addAnswer('en', 'bot.weather.current', 'I apologize, but as a text-based chatbot, I don\'t have real-time weather information.');
+nlp.addAnswer('en', 'bot.weather.forecast', 'I\'m sorry, I don\'t have access to real-time weather forecasts.');
+nlp.addAnswer('en', 'bot.personal.favorite_celebrity', 'I don\'t have personal preferences or favorites.');
+nlp.addAnswer('en', 'bot.fun.quote', 'In the middle of difficulty lies opportunity. - Albert Einstein');
+nlp.addAnswer('en', 'bot.personal.pets', 'I don\'t have physical form, so I don\'t have pets.');
+nlp.addAnswer('en', 'bot.personal.favorite_book', 'As a bot, I don\'t have personal preferences like favorite books.');
+nlp.addAnswer('en', 'bot.personal.siblings', 'I am a standalone entity and do not have siblings.');
+nlp.addAnswer('en', 'bot.fun.myth_legend', 'In Greek mythology, the story of Pandora\'s box tells of a curious woman who opened a forbidden box, releasing all the evils of the world.');
+nlp.addAnswer('en', 'bot.geography.capital_france', 'The capital of France is Paris.');
+nlp.addAnswer('en', 'bot.navigation.grocery_store', 'To find the nearest grocery store, you can use online maps or search for local grocery stores in your area.');
+nlp.addAnswer('en', 'bot.movies.currently_playing', 'The movies currently playing may vary depending on your location and the theaters near you.');
+nlp.addAnswer('en', 'bot.fun.historical_fact', 'Did you know that the Great Wall of China is over 13,000 miles long?');
+nlp.addAnswer('en', 'bot.travel.places_london', 'Some popular places to visit in London include the Tower of London, Buckingham Palace, the British Museum, and the London Eye.');
+nlp.addAnswer('en', 'bot.language.hello_spanish', 'The Spanish word for "hello" is "hola".');
+nlp.addAnswer('en', 'bot.restaurant.recommendation', 'To recommend a good restaurant, I would need more information such as your location and cuisine preferences.');
+nlp.addAnswer('en', 'bot.gardening.houseplant_care', 'Taking care of houseplants involves providing adequate sunlight, watering them regularly, and ensuring proper drainage.');
+nlp.addAnswer('en', 'bot.language.learning_tips', 'To learn a new language, it\'s helpful to practice regularly, immerse yourself in the language through conversation or media, and use language learning resources such as textbooks or online courses.');
+nlp.addAnswer('en', 'bot.programming.coding_tips', 'To improve coding skills, it\'s important to practice regularly, work on projects, and seek out resources like tutorials or coding communities for learning and support.');
+nlp.addAnswer('en', 'bot.fun.animal_fact', 'Did you know that the tongue of a blue whale is so large that 50 people could stand on it?');
+nlp.addAnswer('en', 'bot.geography.tallest_mountain', 'Mount Everest is the tallest mountain in the world, with a peak at 29,031.7 feet above sea level.');
+nlp.addAnswer('en', 'bot.geography.largest_ocean', 'The Pacific Ocean is the largest ocean in the world, covering approximately 63 million square miles.');
+
+// Add 50 additional data
+nlp.addDocument('en', 'what is your favorite movie?', 'bot.personal.favorite_movie');
+nlp.addDocument('en', 'tell me a fun fact', 'bot.fun.fact');
+nlp.addDocument('en', 'what is the capital of Germany?', 'bot.geography.capital_germany');
+nlp.addDocument('en', 'how can I improve my photography skills?', 'bot.photography.skill_improvement');
+nlp.addDocument('en', 'what is the largest desert in the world?', 'bot.geography.largest_desert');
+nlp.addDocument('en', 'recommend a good book to read', 'bot.book.recommendation');
+nlp.addDocument('en', 'how do I start a blog?', 'bot.blogging.starting_guide');
+nlp.addDocument('en', 'what are the symptoms of COVID-19?', 'bot.health.covid_symptoms');
+nlp.addDocument('en', 'how can I stay motivated?', 'bot.self_improvement.motivation_tips');
+nlp.addDocument('en', 'what is the population of China?', 'bot.geography.population_china');
+nlp.addDocument('en', 'can you play a song for me?', 'bot.music.play_song');
+nlp.addDocument('en', 'what is the national bird of the United States?', 'bot.geography.national_bird_us');
+nlp.addDocument('en', 'tell me a joke about cats', 'bot.fun.joke_cats');
+nlp.addDocument('en', 'how do I make a chocolate cake?', 'bot.cooking.chocolate_cake_recipe');
+nlp.addDocument('en', 'what is the tallest building in the world?', 'bot.geography.tallest_building');
+nlp.addDocument('en', 'tell me a riddle', 'bot.fun.riddle');
+nlp.addDocument('en', 'how do I take care of a newborn baby?', 'bot.parenting.newborn_care');
+nlp.addDocument('en', 'what is the currency of Japan?', 'bot.geography.currency_japan');
+nlp.addDocument('en', 'recommend a good hiking trail', 'bot.travel.hiking_trail_recommendation');
+nlp.addDocument('en', 'how do I meditate?', 'bot.mindfulness.meditation_guide');
+nlp.addDocument('en', 'what is the national flower of India?', 'bot.geography.national_flower_india');
+nlp.addDocument('en', 'tell me a fun fact about space', 'bot.fun.fact_space');
+nlp.addDocument('en', 'how do I start a fitness routine?', 'bot.fitness.starting_guide');
+nlp.addDocument('en', 'what is the capital of Australia?', 'bot.geography.capital_australia');
+nlp.addDocument('en', 'recommend a good documentary', 'bot.movie.documentary_recommendation');
+nlp.addDocument('en', 'how do I create a budget?', 'bot.financial_management.budget_creation');
+nlp.addDocument('en', 'what is the largest lake in the world?', 'bot.geography.largest_lake');
+nlp.addDocument('en', 'tell me a joke about dogs', 'bot.fun.joke_dogs');
+nlp.addDocument('en', 'how do I grow tomatoes in my garden?', 'bot.gardening.tomato_growing_tips');
+nlp.addDocument('en', 'what is the time in New York right now?', 'bot.time.current_new_york');
+nlp.addDocument('en', 'what is the national animal of Canada?', 'bot.geography.national_animal_canada');
+nlp.addDocument('en', 'tell me an interesting fact about ancient Egypt', 'bot.fun.fact_ancient_egypt');
+nlp.addDocument('en', 'how do I start learning to play the guitar?', 'bot.music.guitar_learning_guide');
+nlp.addDocument('en', 'what is the largest city in the world by population?', 'bot.geography.largest_city_population');
+nlp.addDocument('en', 'recommend a good science fiction book', 'bot.book.science_fiction_recommendation');
+nlp.addDocument('en', 'how do I create a resume?', 'bot.career.resume_creation');
+nlp.addDocument('en', 'what is the national sport of Brazil?', 'bot.geography.national_sport_brazil');
+nlp.addDocument('en', 'tell me a joke about technology', 'bot.fun.joke_technology');
+nlp.addDocument('en', 'how do I start a small business?', 'bot.business.starting_guide');
+nlp.addDocument('en', 'what is the highest-grossing movie of all time?', 'bot.movie.highest_grossing_movie');
+nlp.addDocument('en', 'tell me a fun fact about dinosaurs', 'bot.fun.fact_dinosaurs');
+nlp.addDocument('en', 'how do I improve my public speaking skills?', 'bot.self_improvement.public_speaking_improvement');
+nlp.addDocument('en', 'what is the national dish of Italy?', 'bot.geography.national_dish_italy');
+nlp.addDocument('en', 'recommend a good podcast', 'bot.media.podcast_recommendation');
+nlp.addDocument('en', 'how do I take care of my skin?', 'bot.beauty.skincare_tips');
+nlp.addDocument('en', 'what is the national animal of Australia?', 'bot.geography.national_animal_australia');
+nlp.addDocument('en', 'tell me a fun fact about the human body', 'bot.fun.fact_human_body');
+nlp.addDocument('en', 'how do I start learning to code?', 'bot.programming.coding_learning_guide');
+nlp.addDocument('en', 'what is the largest country in Africa?', 'bot.geography.largest_country_africa');
+nlp.addDocument('en', 'recommend a good comedy movie', 'bot.movie.comedy_recommendation');
+nlp.addDocument('en', 'how do I bake chocolate chip cookies?', 'bot.cooking.chocolate_chip_cookies_recipe');
+nlp.addDocument('en', 'what is the national flag of France?', 'bot.geography.national_flag_france');
+nlp.addDocument('en', 'tell me a riddle', 'bot.fun.riddle');
+nlp.addDocument('en', 'how do I improve my time management skills?', 'bot.self_improvement.time_management_improvement');
+nlp.addDocument('en', 'what is the national animal of South Africa?', 'bot.geography.national_animal_south_africa');
+nlp.addDocument('en', 'tell me a fun fact about the ocean', 'bot.fun.fact_ocean');
+nlp.addDocument('en', 'how do I start a vegetable garden?', 'bot.gardening.vegetable_garden_starting_guide');
+nlp.addDocument('en', 'what is the temperature in London today?', 'bot.weather.current_london');
+nlp.addDocument('en', 'what is the national sport of Japan?', 'bot.geography.national_sport_japan');
+
+// Train the NLG with answers
+nlp.addAnswer('en', 'bot.personal.favorite_movie', 'As a bot, I don\'t watch movies or have personal preferences.');
+nlp.addAnswer('en', 'bot.geography.capital_germany', 'The capital of Germany is Berlin.');
+nlp.addAnswer('en', 'bot.photography.skill_improvement', 'To improve your photography skills, you can practice regularly, study composition techniques, and learn about different camera settings.');
+nlp.addAnswer('en', 'bot.geography.largest_desert', 'The largest desert in the world is the Antarctic Desert.');
+nlp.addAnswer('en', 'bot.book.recommendation', 'It depends on your interests. What genre or type of book are you looking for?');
+nlp.addAnswer('en', 'bot.blogging.starting_guide', 'To start a blog, you can choose a blogging platform, select a domain name, customize your blog, and start creating content.');
+nlp.addAnswer('en', 'bot.health.covid_symptoms', 'Common symptoms of COVID-19 include fever, cough, shortness of breath, fatigue, and loss of taste or smell.');
+nlp.addAnswer('en', 'bot.self_improvement.motivation_tips', 'To stay motivated, it can be helpful to set goals, break tasks into smaller steps, find sources of inspiration, and celebrate your progress.');
+nlp.addAnswer('en', 'bot.geography.population_china', 'The population of China is approximately 1.4 billion.');
+nlp.addAnswer('en', 'bot.music.play_song', 'I\'m sorry, but I don\'t have the ability to play songs.');
+nlp.addAnswer('en', 'bot.geography.national_bird_us', 'The national bird of the United States is the bald eagle.');
+nlp.addAnswer('en', 'bot.fun.joke_cats', 'Why don\'t cats play poker in the wild? Too many cheetahs!');
+nlp.addAnswer('en', 'bot.cooking.chocolate_cake_recipe', 'Here\'s a simple chocolate cake recipe:\nIngredients:\n- 2 cups all-purpose flour\n- 2 cups sugar\n- 3/4 cup unsweetened cocoa powder\n- 1 1/2 teaspoons baking powder\n- 1 1/2 teaspoons baking soda\n- 1 teaspoon salt\n- 2 large eggs\n- 1 cup milk\n- 1/2 cup vegetable oil\n- 2 teaspoons vanilla extract\n- 1 cup boiling water\nInstructions:\n1. Preheat your oven to 350°F (175°C) and grease and flour two 9-inch round cake pans.\n2. In a large mixing bowl, combine the flour, sugar, cocoa powder, baking powder, baking soda, and salt.\n3. Add the eggs, milk, oil, and vanilla extract to the dry ingredients and mix until well combined.\n4. Stir in the boiling water, mixing until the batter is smooth.\n5. Pour the batter evenly into the prepared cake pans.\n6. Bake for 30 to 35 minutes, or until a toothpick inserted into the center of the cakes comes out clean.\n7. Remove the cakes from the oven and allow them to cool in the pans for 10 minutes.\n8. Transfer the cakes to a wire rack to cool completely before frosting.\nEnjoy your homemade chocolate cake!');
+nlp.addAnswer('en', 'bot.geography.tallest_building', 'The tallest building in the world is the Burj Khalifa in Dubai, United Arab Emirates, with a height of 2,717 feet.');
+nlp.addAnswer('en', 'bot.fun.riddle', 'Sure, here\'s a riddle for you: What has keys but can\'t open locks?');
+nlp.addAnswer('en', 'bot.parenting.newborn_care', 'Taking care of a newborn baby involves feeding them regularly, changing diapers, providing a safe sleeping environment, and giving them lots of love and attention.');
+nlp.addAnswer('en', 'bot.geography.currency_japan', 'The currency of Japan is the Japanese Yen (JPY).');
+nlp.addAnswer('en', 'bot.travel.hiking_trail_recommendation', 'One popular hiking trail is the Appalachian Trail, which stretches over 2,000 miles through the eastern United States.');
+nlp.addAnswer('en', 'bot.mindfulness.meditation_guide', 'To start meditating, find a quiet and comfortable space, sit in a relaxed position, focus on your breath or a specific object, and let go of any distracting thoughts.');
+nlp.addAnswer('en', 'bot.geography.national_flower_india', 'The national flower of India is the lotus.');
+nlp.addAnswer('en', 'bot.fun.fact_space', 'Did you know that the largest volcano in the solar system is located on Mars? It\'s called Olympus Mons and it\'s about 13.6 miles high!');
+nlp.addAnswer('en', 'bot.fitness.starting_guide', 'To start a fitness routine, set realistic goals, choose activities you enjoy, create a schedule, and gradually increase intensity and duration.');
+nlp.addAnswer('en', 'bot.geography.capital_australia', 'The capital of Australia is Canberra.');
+nlp.addAnswer('en', 'bot.movie.documentary_recommendation', 'A highly recommended documentary is "Planet Earth" by the BBC.');
+nlp.addAnswer('en', 'bot.financial_management.budget_creation', 'To create a budget, track your income and expenses, set financial goals, allocate funds to different categories, and regularly review and adjust your budget.');
+nlp.addAnswer('en', 'bot.geography.largest_lake', 'The largest lake in the world by surface area is the Caspian Sea.');
+nlp.addAnswer('en', 'bot.fun.joke_dogs', 'Why did the dog sit in the shade? Because it didn\'t want to be a hot dog!');
+nlp.addAnswer('en', 'bot.gardening.tomato_growing_tips', 'To grow tomatoes in your garden, choose a sunny spot, prepare the soil, plant tomato seedlings or seeds, water regularly, and provide support as the plants grow.');
+nlp.addAnswer('en', 'bot.time.current_new_york', 'The current time in New York is ');
+nlp.addAnswer('en', 'bot.geography.national_animal_canada', 'The national animal of Canada is the beaver.');
+nlp.addAnswer('en', 'bot.fun.fact_ancient_egypt', 'Ancient Egyptians believed that cats were sacred animals and treated them with great respect.');
+nlp.addAnswer('en', 'bot.music.guitar_learning_guide', 'To start learning to play the guitar, get a guitar, learn basic chords and strumming patterns, practice regularly, and explore online tutorials or take lessons from a teacher.');
+nlp.addAnswer('en', 'bot.geography.largest_city_population', 'The largest city in the world by population is Tokyo, Japan.');
+nlp.addAnswer('en', 'bot.book.science_fiction_recommendation', 'A popular science fiction book recommendation is "Dune" by Frank Herbert.');
+nlp.addAnswer('en', 'bot.career.resume_creation', 'To create a resume, start by choosing a format, include your contact information, summarize your education and work experience, highlight relevant skills and achievements, and proofread for errors.');
+nlp.addAnswer('en', 'bot.geography.national_sport_brazil', 'The national sport of Brazil is football (soccer).');
+nlp.addAnswer('en', 'bot.fun.joke_technology', 'Why don\'t scientists trust atoms? Because they make up everything!');
+nlp.addAnswer('en', 'bot.business.starting_guide', 'To start a small business, develop a business idea, create a business plan, secure financing, register your business, and start marketing and selling your products or services.');
+nlp.addAnswer('en', 'bot.movie.highest_grossing_movie', 'The highest-grossing movie of all time is currently "Avengers: Endgame" (as of my knowledge cutoff in September 2021).');
+nlp.addAnswer('en', 'bot.fun.fact_dinosaurs', 'Did you know that the Tyrannosaurus rex is one of the largest meat-eating dinosaurs that ever lived? It could reach lengths of up to 40 feet!');
+nlp.addAnswer('en', 'bot.self_improvement.public_speaking_improvement', 'To improve your public speaking skills, practice regularly, prepare and rehearse your speeches, use visual aids, engage with your audience, and seek feedback from others.');
+nlp.addAnswer('en', 'bot.geography.national_dish_italy', 'The national dish of Italy is pasta.');
+nlp.addAnswer('en', 'bot.media.podcast_recommendation', 'A highly recommended podcast is "The Joe Rogan Experience."');
+nlp.addAnswer('en', 'bot.beauty.skincare_tips', 'To take care of your skin, cleanse it daily, moisturize regularly, protect it from the sun, eat a healthy diet, and drink plenty of water.');
+nlp.addAnswer('en', 'bot.geography.national_animal_australia', 'The national animal of Australia is the kangaroo.');
+nlp.addAnswer('en', 'bot.fun.fact_human_body', 'Did you know that the human brain is the most energy-consuming organ in the body, using about 20% of the body\'s total energy?');
+nlp.addAnswer('en', 'bot.programming.coding_learning_guide', 'To start learning to code, choose a programming language, find online tutorials or courses, practice coding exercises, and work on small projects to apply your knowledge.');
+nlp.addAnswer('en', 'bot.geography.largest_country_africa', 'The largest country in Africa by land area is Algeria.');
+nlp.addAnswer('en', 'bot.movie.comedy_recommendation', 'A great comedy movie recommendation is "The Hangover."');
+nlp.addAnswer('en', 'bot.cooking.chocolate_chip_cookies_recipe', 'To bake chocolate chip cookies, you will need the following ingredients:\n- 1 cup unsalted butter, softened\n- 1 cup granulated sugar\n- 1 cup brown sugar, packed\n- 2 large eggs\n- 1 teaspoon vanilla extract\n- 3 cups all-purpose flour\n- 1 teaspoon baking soda\n- 1/2 teaspoon salt\n- 2 cups chocolate chips\n\nInstructions:\n1. Preheat your oven to 375°F (190°C) and line baking sheets with parchment paper.\n2. In a large mixing bowl, cream together the softened butter, granulated sugar, and brown sugar until light and fluffy.\n3. Beat in the eggs one at a time, then stir in the vanilla extract.\n4. In a separate bowl, whisk together the flour, baking soda, and salt. Gradually add the dry ingredients to the wet ingredients, mixing until just combined.\n5. Fold in the chocolate chips.\n6. Drop rounded tablespoons of cookie dough onto the prepared baking sheets, spacing them about 2 inches apart.\n7. Bake for 9 to 11 minutes, or until the edges are golden brown.\n8. Remove the cookies from the oven and let them cool on the baking sheets for a few minutes before transferring them to wire racks to cool completely.\nEnjoy your homemade chocolate chip cookies!');
+nlp.addAnswer('en', 'bot.geography.national_flag_france', 'The national flag of France is called the Tricolour and consists of three vertical stripes of blue, white, and red.');
+nlp.addAnswer('en', 'bot.fun.riddle', 'Sure, here\'s a riddle for you: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?');
+nlp.addAnswer('en', 'bot.self_improvement.time_management_improvement', 'To improve your time management skills, set clear goals, prioritize tasks, eliminate distractions, use time-blocking techniques, delegate tasks when possible, and regularly evaluate and adjust your schedule.');
+nlp.addAnswer('en', 'bot.geography.national_animal_south_africa', 'The national animal of South Africa is the springbok.');
+nlp.addAnswer('en', 'bot.fun.fact_ocean', 'Did you know that the Pacific Ocean is the largest and deepest ocean on Earth, covering more than 30% of the planet\'s surface?');
+nlp.addAnswer('en', 'bot.gardening.vegetable_garden_starting_guide', 'To start a vegetable garden, choose a suitable location, prepare the soil, decide on the vegetables you want to grow, plant the seeds or seedlings, water regularly, and provide proper care and maintenance.');
+nlp.addAnswer('en', 'bot.weather.current_london', 'I\'m sorry, but as an AI language model, I don\'t have real-time information. Please check a reliable weather source or website for the current weather in London.');
+nlp.addAnswer('en', 'bot.geography.national_flower_uk', 'The national flower of the United Kingdom is the rose.');
+nlp.addAnswer('en', 'bot.fun.joke_fruit', 'Why did the banana go to the doctor? Because it wasn\'t peeling well!');
+nlp.addAnswer('en', 'bot.tech.artificial_intelligence_explanation', 'Artificial intelligence (AI) refers to the simulation of human intelligence in machines that are programmed to think and learn like humans. It involves various techniques such as machine learning, natural language processing, computer vision, and robotics.');
+nlp.addAnswer('en', 'bot.fitness.strength_training_tips', 'To start strength training, choose exercises that target different muscle groups, start with light weights and gradually increase the resistance, maintain proper form, and allow for adequate rest and recovery between workouts.');
+nlp.addAnswer('en', 'bot.geography.national_dish_mexico', 'The national dish of Mexico is chilaquiles.');
+nlp.addAnswer('en', 'bot.movie.action_recommendation', 'A great action movie recommendation is "Mad Max: Fury Road."');
+nlp.addAnswer('en', 'bot.parenting.toddler_discipline_tips', 'When disciplining a toddler, it\'s important to set clear and consistent boundaries, use positive reinforcement and rewards, redirect their attention to more appropriate behaviors, and avoid harsh punishments.');
+nlp.addAnswer('en', 'bot.geography.capital_france', 'The capital of France is Paris.');
+nlp.addAnswer('en', 'bot.book.classic_literature_recommendation', 'A classic literature recommendation is "Pride and Prejudice" by Jane Austen.');
+nlp.addAnswer('en', 'bot.financial_management.saving_tips', 'To save money, create a budget, track your expenses, reduce discretionary spending, look for ways to save on bills and groceries, automate your savings, and consider long-term investment options.');
+nlp.addAnswer('en', 'bot.geography.largest_island', 'The largest island in the world is Greenland.');
+nlp.addAnswer('en', 'bot.movie.drama_recommendation', 'A great drama movie recommendation is "The Shawshank Redemption."');
+nlp.addAnswer('en', 'bot.fun.fact_honey', 'Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible!');
+nlp.addAnswer('en', 'bot.self_improvement.positive_thinking_tips', 'To cultivate positive thinking, practice gratitude, reframe negative thoughts, surround yourself with positive people, engage in activities that bring you joy, and focus on self-care and self-compassion.');
+nlp.addAnswer('en', 'bot.geography.national_animal_china', 'The national animal of China is the giant panda.');
+nlp.addAnswer('en', 'bot.fun.joke_math', 'Why did the mathematician bring a ladder to the bar? Because he wanted to drink on the roof!');
+nlp.addAnswer('en', 'bot.programming.best_programming_language', 'The best programming language to learn depends on your goals and interests. Some popular programming languages include Python, Java, JavaScript, C++, and Ruby.');
+nlp.addAnswer('en', 'bot.geography.largest_mountain', 'The tallest mountain in the world is Mount Everest, located in the Himalayas.');
 
   await nlp.train();
+
+
   const response = await nlp.process('en', input_text);
   console.log(response);
   return response.answer   
