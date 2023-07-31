@@ -32,7 +32,7 @@
             </div>
     
             <div class="msg-text">
-              Hi, welcome to SimpleChat! Go ahead and send me a message. 😄
+              Chào bạn, hãy bắt đầu nhắn tin để chúng ta có thể cùng trò chuyện😄
             </div>
           </div>
         </div>
@@ -50,43 +50,5 @@
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./chat_interface.js"></script>
-
-<script>  
-msgerForm.addEventListener("submit", event => {
-    event.preventDefault();
-  
-    const msgText = msgerInput.value;
-    if (!msgText) return;
-  
-    appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
-    msgerInput.value = "";
-  
-    process(msgText).then((e) => {
-      botResponse(e);
-    })
-  });
-
-
-const process = async (input_text) => {
-  
-  let answer = await axios.post('http://localhost:8080/messages', {
-    userId: 1,
-    content: input_text
-  })
-  .then(function (response) {
-    console.log(response.data.answer);
-
-    return response.data.answer;
-  })
-  .catch(function (error) {
-    console.log(error);
-
-    return "There is some problem with server"
-  });
-
-  return answer;
-}
-
-
-</script>
+<script src="./chat_handle.js"></script>
 </html>
