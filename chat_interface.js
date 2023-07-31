@@ -75,6 +75,11 @@ function renderList(terms) {
     const termSpelling = document.createElement("div");
     termSpelling.textContent = "Phiên âm: " + term.spelling;
     termElement.appendChild(termSpelling);
+    termSpelling.classList.add("read")
+
+    termSpelling.addEventListener("click", () => {
+      read(term.term);
+    })
 
     const termMeaning = document.createElement("div");
     termMeaning.textContent = "Nghĩa: " + term.meaning;
